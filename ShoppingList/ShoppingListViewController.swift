@@ -18,23 +18,10 @@ class ShoppingListViewController: UIViewController {
         view.layer.cornerRadius = 5
         return view
     }()
-    
-    let checkBoxButton: UIButton = {
-        let view = UIButton()
-        view.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
-        return view
-    }()
-    
-    let favoriteButton: UIButton = {
-        let view = UIButton()
-        view.setImage(UIImage(systemName: "star"), for: .normal)
-        return view
-    }()
-    
+
     // var toDoList: [UserShoppingList] = []
     // class도 자료형으로 사용이 가능한가?
     var toDoList: Results<UserShoppingList>!
-    
     
     let mainView = ShoppingListView()
     
@@ -48,8 +35,9 @@ class ShoppingListViewController: UIViewController {
         view.backgroundColor = .white
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(ShoppingListTableViewCell.self, forCellReuseIdentifier: "cell")
         view.addSubview(tableView)
+        
         tableView.snp.makeConstraints { make in
             make.trailingMargin.equalTo(-20)
             make.leadingMargin.equalTo(20)
@@ -87,19 +75,10 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) 
-        cell.textLabel?.text = toDoList[indexPath.row].toDo
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as!  ShoppingListTableViewCell
+
+        cell.shoppingListTextLabel.text = toDoList[indexPath.row].toDo
         cell.backgroundColor = .systemGray6
-        
-        [checkBoxButton, favoriteButton].forEach { self.tableView.addSubview($0) }
-        
-//        checkBoxButton.snp.makeConstraints { make in
-//            make.topMargin.equalTo(10)
-//            make.leadingMargin.equalTo(0)
-//            make.bottomMargin.equalTo(-10)
-//            make.width.equalTo(30)
-//        }
-        
         return cell
     }
     
@@ -109,11 +88,14 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
         return 50
     }
     
-    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
     
 //    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 //        if editingStyle == .delete {
-//            toDoList[indexPath.row].
+            
+            
 //            tableView.deleteRows(at: [indexPath], with: .fade)
 //        }
 //    }
