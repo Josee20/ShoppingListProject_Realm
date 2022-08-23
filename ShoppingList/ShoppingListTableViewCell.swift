@@ -7,18 +7,24 @@
 
 import UIKit
 
+protocol ContentsButtonDelegate: AnyObject {
+    func checkBoxButtonClickedP(_ sender: UIButton)
+    func favoriteButtonClickedP(_ sender: UIButton)
+}
+
 class ShoppingListTableViewCell: UITableViewCell {
 
+    var checkBoxButtonDelegate: ContentsButtonDelegate?
+    var favoriteButtonDelegate: ContentsButtonDelegate?
+    
     let checkBoxButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
         view.tintColor = .black
         return view
     }()
     
     let favoriteButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(systemName: "star"), for: .normal)
         view.tintColor = .black
         return view
     }()
@@ -32,6 +38,9 @@ class ShoppingListTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        self.checkBoxButton.addTarget(self, action: #selector(checkBoxButtonClicked), for: .touchUpInside)
+        self.favoriteButton.addTarget(self, action: #selector(favoriteButtonClicked), for: .touchUpInside)
+        
         configureUI()
         setConstraints()
     }
@@ -41,20 +50,21 @@ class ShoppingListTableViewCell: UITableViewCell {
     }
     
     func configureUI() {
-        [checkBoxButton, favoriteButton, shoppingListTextLabel].forEach { self.addSubview($0) }
+        [checkBoxButton, favoriteButton, shoppingListTextLabel].forEach { contentView.addSubview($0) }
     }
     
     func setConstraints() {
         
         checkBoxButton.snp.makeConstraints {
-            $0.leadingMargin.topMargin.equalTo(10)
+            $0.leadingMargin.equalTo(0)
+            $0.topMargin.equalTo(10)
             $0.bottomMargin.equalTo(-10)
             $0.width.equalTo(self.snp.height)
-
         }
         
         favoriteButton.snp.makeConstraints {
-            $0.trailingMargin.bottomMargin.equalTo(-10)
+            $0.trailingMargin.equalTo(0)
+            $0.bottomMargin.equalTo(-10)
             $0.topMargin.equalTo(10)
             $0.width.equalTo(self.snp.height)
         }
@@ -65,6 +75,17 @@ class ShoppingListTableViewCell: UITableViewCell {
             $0.bottomMargin.equalTo(-10)
             $0.trailingMargin.equalTo(favoriteButton.snp.leading).offset(-20)
         }
+    }
+    
+    @objc func checkBoxButtonClicked() {
+        checkBoxButtonDelegate?.checkBoxButtonClickedP(checkBoxButton)
+//        checkBoxButton.setImage(UIImage(systemName: "checkmark.square.fill"), for: .normal)
+        
+        
+    }
+    @objc func favoriteButtonClicked() {
+        favoriteButtonDelegate?.favoriteButtonClickedP(favoriteButton)
+//        favoriteButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
     }
     
 }

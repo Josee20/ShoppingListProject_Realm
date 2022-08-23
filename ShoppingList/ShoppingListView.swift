@@ -55,7 +55,9 @@ class ShoppingListView: UIView {
     }
     
     func configureUI() {
-        [titleLabel, textFieldBackgroundView, shoppingTextField, addButton].forEach { self.addSubview($0) }
+        [titleLabel, textFieldBackgroundView, shoppingTextField, addButton].forEach {
+            self.addSubview($0)
+        }
     }
     
     func setConstraints() {
