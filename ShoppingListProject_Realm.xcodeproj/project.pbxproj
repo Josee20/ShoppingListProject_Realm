@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4914BEC228B7AC1D00FECFF9 /* BackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4914BEC128B7AC1D00FECFF9 /* BackupViewController.swift */; };
+		4914BEC428B7AC4200FECFF9 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4914BEC328B7AC4200FECFF9 /* BackupView.swift */; };
+		4914BEC628B7AD0C00FECFF9 /* BackupTableVIewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4914BEC528B7AD0C00FECFF9 /* BackupTableVIewCell.swift */; };
+		4914BEC928B7AD5000FECFF9 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 4914BEC828B7AD5000FECFF9 /* Zip */; };
+		4914BECC28B7CF3500FECFF9 /* Extension + FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4914BECB28B7CF3500FECFF9 /* Extension + FileManager.swift */; };
 		4928FC4A28B65CE80038F7E0 /* MoreInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4928FC4928B65CE80038F7E0 /* MoreInfoViewController.swift */; };
 		4928FC4C28B65CF30038F7E0 /* MoreInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4928FC4B28B65CF30038F7E0 /* MoreInfoView.swift */; };
 		4928FC4F28B683010038F7E0 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4928FC4E28B683010038F7E0 /* PhotoViewController.swift */; };
@@ -34,6 +39,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4914BEC128B7AC1D00FECFF9 /* BackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupViewController.swift; sourceTree = "<group>"; };
+		4914BEC328B7AC4200FECFF9 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
+		4914BEC528B7AD0C00FECFF9 /* BackupTableVIewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTableVIewCell.swift; sourceTree = "<group>"; };
+		4914BECB28B7CF3500FECFF9 /* Extension + FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension + FileManager.swift"; sourceTree = "<group>"; };
 		4928FC4928B65CE80038F7E0 /* MoreInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreInfoViewController.swift; sourceTree = "<group>"; };
 		4928FC4B28B65CF30038F7E0 /* MoreInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreInfoView.swift; sourceTree = "<group>"; };
 		4928FC4E28B683010038F7E0 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
@@ -67,12 +76,31 @@
 				49DB950528B3894600F2C579 /* SnapKit in Frameworks */,
 				49DB94FF28B3762C00F2C579 /* RealmSwift in Frameworks */,
 				49DB94FD28B3762C00F2C579 /* Realm in Frameworks */,
+				4914BEC928B7AD5000FECFF9 /* Zip in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4914BEC028B7AC0A00FECFF9 /* Backup */ = {
+			isa = PBXGroup;
+			children = (
+				4914BEC128B7AC1D00FECFF9 /* BackupViewController.swift */,
+				4914BEC328B7AC4200FECFF9 /* BackupView.swift */,
+				4914BEC528B7AD0C00FECFF9 /* BackupTableVIewCell.swift */,
+			);
+			path = Backup;
+			sourceTree = "<group>";
+		};
+		4914BECA28B7CF2500FECFF9 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				4914BECB28B7CF3500FECFF9 /* Extension + FileManager.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		4928FC4828B65CCF0038F7E0 /* MoreInfo */ = {
 			isa = PBXGroup;
 			children = (
@@ -107,11 +135,13 @@
 		49DB94D628B3749F00F2C579 = {
 			isa = PBXGroup;
 			children = (
+				4914BECA28B7CF2500FECFF9 /* Extension */,
 				49DB950028B377DB00F2C579 /* RealmModel */,
-				4928FC5728B685F60038F7E0 /* Base */,
+				4914BEC028B7AC0A00FECFF9 /* Backup */,
 				4928FC4D28B682B10038F7E0 /* Phtoto */,
 				4928FC4828B65CCF0038F7E0 /* MoreInfo */,
 				49DB94F628B3758F00F2C579 /* ShoppingList */,
+				4928FC5728B685F60038F7E0 /* Base */,
 				49DB94E128B3749F00F2C579 /* ShoppingListProject_Realm */,
 				49DB94E028B3749F00F2C579 /* Products */,
 			);
@@ -178,6 +208,7 @@
 				49DB94FE28B3762C00F2C579 /* RealmSwift */,
 				49DB950428B3894600F2C579 /* SnapKit */,
 				4928FC5528B6859F0038F7E0 /* Kingfisher */,
+				4914BEC828B7AD5000FECFF9 /* Zip */,
 			);
 			productName = ShoppingListProject_Realm;
 			productReference = 49DB94DF28B3749F00F2C579 /* ShoppingListProject_Realm.app */;
@@ -211,6 +242,7 @@
 				49DB94FB28B3762C00F2C579 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				49DB950328B3894500F2C579 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				4928FC5428B6859F0038F7E0 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				4914BEC728B7AD4F00FECFF9 /* XCRemoteSwiftPackageReference "Zip" */,
 			);
 			productRefGroup = 49DB94E028B3749F00F2C579 /* Products */;
 			projectDirPath = "";
@@ -247,6 +279,8 @@
 				49DB94E728B3749F00F2C579 /* ViewController.swift in Sources */,
 				4928FC5D28B686990038F7E0 /* BaseCollectionViewCell.swift in Sources */,
 				49DB950728B3B5F700F2C579 /* ShoppingListTableViewCell.swift in Sources */,
+				4914BEC228B7AC1D00FECFF9 /* BackupViewController.swift in Sources */,
+				4914BECC28B7CF3500FECFF9 /* Extension + FileManager.swift in Sources */,
 				4928FC5128B683CF0038F7E0 /* PhotoView.swift in Sources */,
 				4928FC6128B68A6F0038F7E0 /* ImageDummyData.swift in Sources */,
 				49DB94E328B3749F00F2C579 /* AppDelegate.swift in Sources */,
@@ -255,6 +289,8 @@
 				49DB94E528B3749F00F2C579 /* SceneDelegate.swift in Sources */,
 				4928FC5B28B686520038F7E0 /* BaseView.swift in Sources */,
 				49DB94FA28B375B300F2C579 /* ShoppingListView.swift in Sources */,
+				4914BEC628B7AD0C00FECFF9 /* BackupTableVIewCell.swift in Sources */,
+				4914BEC428B7AC4200FECFF9 /* BackupView.swift in Sources */,
 				4928FC4F28B683010038F7E0 /* PhotoViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -475,6 +511,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4914BEC728B7AD4F00FECFF9 /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		4928FC5428B6859F0038F7E0 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -502,6 +546,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4914BEC828B7AD5000FECFF9 /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4914BEC728B7AD4F00FECFF9 /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
+		};
 		4928FC5528B6859F0038F7E0 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4928FC5428B6859F0038F7E0 /* XCRemoteSwiftPackageReference "Kingfisher" */;

@@ -43,8 +43,15 @@ class ShoppingListView: BaseView {
         return view
     }()
     
+    let backupButton: UIButton = {
+        let view = UIButton()
+        view.setTitle("백업", for: .normal)
+        view.setTitleColor(.blue, for: .normal)
+        return view
+    }()
+    
     override func configureUI() {
-        [titleLabel, textFieldBackgroundView, shoppingTextField, addButton].forEach {
+        [titleLabel, textFieldBackgroundView, shoppingTextField, addButton, backupButton].forEach {
             self.addSubview($0)
         }
     }
@@ -77,6 +84,13 @@ class ShoppingListView: BaseView {
             $0.trailingMargin.equalTo(textFieldBackgroundView.snp.trailing).offset(-20)
             $0.bottomMargin.equalTo(textFieldBackgroundView.snp.bottom).offset(-20)
             $0.width.equalTo(50)
+        }
+        
+        backupButton.snp.makeConstraints {
+            $0.top.equalTo(self.safeAreaLayoutGuide).offset(20)
+            $0.leading.equalTo(self.safeAreaLayoutGuide).offset(20)
+            $0.width.equalTo(50)
+            $0.height.equalTo(20)
         }
     }
     

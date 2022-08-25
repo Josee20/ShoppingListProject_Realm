@@ -49,11 +49,22 @@ class ShoppingListViewController: BaseViewController {
             make.topMargin.equalTo(mainView.textFieldBackgroundView.snp.bottom).offset(20) 
         }
         
+        print(localRealm.configuration.fileURL!)
+    }
+    
+    override func configure() {
+        
         toDoList = localRealm.objects(UserShoppingList.self)
         
         mainView.addButton.addTarget(self, action: #selector(addButtonClicked), for: .touchUpInside)
-        
-        print(localRealm.configuration.fileURL!)
+        mainView.backupButton.addTarget(self, action: #selector(backupButtonClicked), for: .touchUpInside)
+    }
+    
+    @objc func backupButtonClicked() {
+        let vc = BackupViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
     }
     
     @objc func addButtonClicked() {
