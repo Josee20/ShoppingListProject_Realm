@@ -17,7 +17,8 @@ class BackupTableViewCell: BaseTableViewCell {
     
     let titleLabel: UILabel = {
        let view = UILabel()
-        view.textColor = .white
+        view.textColor = .black
+        view.textAlignment = .center
         view.backgroundColor = .systemGray6
         view.font = .boldSystemFont(ofSize: 15)
         return view

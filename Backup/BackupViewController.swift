@@ -12,6 +12,14 @@ import Zip
 
 class BackupViewController: BaseViewController {
     
+    lazy var progressView: UIProgressView = {
+        let view = UIProgressView()
+        view.trackTintColor = .lightGray
+        view.progressTintColor = .systemBlue
+        view.progress = 0.0
+        return view
+    }()
+    
     let mainView = BackupView()
     
     override func loadView() {
@@ -20,6 +28,10 @@ class BackupViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        mainView.addSubview(progressView)
+        
+        
     }
     
     override func configure() {
@@ -32,6 +44,7 @@ class BackupViewController: BaseViewController {
         
         let closeButton = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(closeButtonClicked))
         navigationItem.leftBarButtonItem = closeButton
+        
         
     }
     
@@ -87,17 +100,21 @@ class BackupViewController: BaseViewController {
         documentPicker.allowsMultipleSelection = false
         
         self.present(documentPicker, animated: true)
+        
+        
+        
     }
-    
-    
-    
 }
 
 extension BackupViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? BackupTableViewCell else { return UITableViewCell() }
+        
+        
         
         return cell
     }
@@ -137,9 +154,21 @@ extension BackupViewController: UIDocumentPickerDelegate {
             
             do {
                 try Zip.unzipFile(fileURL, destination: path, overwrite: true, password: nil, progress: { progress in
-                    print("progress: \(progress)")}, fileOutputHandler: { unzippedFile in
-                        print("unzippedFile: \(unzippedFile)")
-                        self.showAlertMessage(title: "복구가 완료되었습니다.")
+                    print("progress: \(progress)")
+                    self.progressView.setProgress(Float(progress), animated: true)
+                }, fileOutputHandler: { unzippedFile in
+                    print("unzippedFile: \(unzippedFile)")
+                        
+                        self.progressView.snp.makeConstraints { make in
+                            make.centerX.equalTo(UIScreen.main.bounds.width / 2)
+                            make.centerY.equalTo(UIScreen.main.bounds.height / 2)
+                            make.width.equalTo(200)
+                            make.height.equalTo(5)
+                        }
+                        
+                        
+                        
+//                        self.showAlertMessage(title: "복구가 완료되었습니다.")
                     })
             } catch let error {
                 print(error.localizedDescription)
