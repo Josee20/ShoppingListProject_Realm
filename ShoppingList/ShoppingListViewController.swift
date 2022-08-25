@@ -8,9 +8,8 @@
 import UIKit
 import RealmSwift
 import SnapKit
-import SwiftUI
 
-class ShoppingListViewController: UIViewController {
+class ShoppingListViewController: BaseViewController {
     
     let localRealm = try! Realm()
     
@@ -26,10 +25,9 @@ class ShoppingListViewController: UIViewController {
     var toDoList: Results<UserShoppingList>! {
         didSet {
             tableView.reloadData()
+            print("tasks Changed")
         }
     }
-    
-   
     
     override func loadView() {
         self.view = mainView
@@ -69,6 +67,18 @@ class ShoppingListViewController: UIViewController {
         
         tableView.reloadData()
     }
+    
+    func loadImageFromDocument(fileName: String) -> UIImage? {
+        guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil}
+        let fileURL = documentDirectory.appendingPathComponent(fileName)
+
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            return UIImage(contentsOfFile: fileURL.path)
+        } else {
+            return UIImage(systemName: "star.fill")
+        }
+    }
+    
 }
 
 extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource {
@@ -83,8 +93,15 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
 
         cell.backgroundColor = .systemGray6
         
+        cell.setData(data: toDoList[indexPath.row])
+        cell.shoppingListImage.image = loadImageFromDocument(fileName: "\(toDoList[indexPath.row].objectID).jpg")
+        
         //레이블
         cell.shoppingListTextLabel.text = toDoList[indexPath.row].toDo
+        
+        //상세정보
+        cell.moreInfoButtonDelegate = self
+        cell.moreInfoButton.tag = indexPath.row
         
         //체크박스
         cell.checkBoxButtonDelegate = self
@@ -103,7 +120,7 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
+        return 60
     }
 
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -138,7 +155,16 @@ extension ShoppingListViewController: ContentsButtonDelegate {
         }
         
         tableView.reloadData()
+    }
+    
+    func moreInfoButtonClickedP(_ sender: UIButton) {
+        let vc = MoreInfoViewController()
+        vc.item = toDoList[sender.tag].toDo
+        let nav = UINavigationController(rootViewController: vc)
         
+        
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
     }
 }
 

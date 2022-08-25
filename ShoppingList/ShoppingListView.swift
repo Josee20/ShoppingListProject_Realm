@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 
-class ShoppingListView: UIView {
+class ShoppingListView: BaseView {
     
     let titleLabel: UILabel = {
         let view = UILabel()
@@ -43,24 +43,13 @@ class ShoppingListView: UIView {
         return view
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        configureUI()
-        setConstraints()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configureUI() {
+    override func configureUI() {
         [titleLabel, textFieldBackgroundView, shoppingTextField, addButton].forEach {
             self.addSubview($0)
         }
     }
     
-    func setConstraints() {
+    override func setConstraints() {
         
         titleLabel.snp.makeConstraints {
             $0.width.equalTo(50)
