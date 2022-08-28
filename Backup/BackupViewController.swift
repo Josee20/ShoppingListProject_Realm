@@ -20,6 +20,12 @@ class BackupViewController: BaseViewController {
         return view
     }()
     
+    let formatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyMMdd_HH:mm:SS"
+        return formatter
+    }()
+    
     var backupList = [String?]()
     
     let mainView = BackupView()
@@ -36,8 +42,10 @@ class BackupViewController: BaseViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         backupList += fetchDocumentZipFile()
+        mainView.tableView.reloadData()
     }
     
     override func configure() {
@@ -65,11 +73,13 @@ class BackupViewController: BaseViewController {
         }
         
         let backupFileURL = path.appendingPathComponent("ShoppingList_1.zip")
+//        let backupFileURL = path.appendingPathComponent("\(formatter.string(from: Date()))_ShoppingList")
         
         let vc = UIActivityViewController(activityItems: [backupFileURL], applicationActivities: [])
         self.present(vc, animated: true)
     }
     
+    // 백업하기
     @objc func backupButtonClicked() {
         
         var urlPaths = [URL]()
@@ -89,9 +99,11 @@ class BackupViewController: BaseViewController {
         urlPaths.append(URL(string: realmFile.path)!)
         
         do {
+//            let zipFilePath = try Zip.quickZipFiles(urlPaths, fileName: "\(formatter.string(from: Date()))_ShoppingList")
             let zipFilePath = try Zip.quickZipFiles(urlPaths, fileName: "ShoppingList_1")
             print("Archive Location : \(zipFilePath)")
             showActivitiyViewController()
+            self.mainView.tableView.reloadData()
         } catch {
             showAlertMessage(title: "압축을 실패했습니다")
         }
@@ -105,9 +117,6 @@ class BackupViewController: BaseViewController {
         documentPicker.allowsMultipleSelection = false
         
         self.present(documentPicker, animated: true)
-        
-        
-        
     }
 }
 
@@ -116,9 +125,7 @@ extension BackupViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? BackupTableViewCell else { return UITableViewCell() }
         
-        
         cell.titleLabel.text = backupList[indexPath.row]
-        
         return cell
     }
     
@@ -168,10 +175,7 @@ extension BackupViewController: UIDocumentPickerDelegate {
                             make.width.equalTo(200)
                             make.height.equalTo(5)
                         }
-                        
-                        
-                        
-//                        self.showAlertMessage(title: "복구가 완료되었습니다.")
+    
                     })
             } catch let error {
                 print(error.localizedDescription)
@@ -188,6 +192,7 @@ extension BackupViewController: UIDocumentPickerDelegate {
                     
                 }, fileOutputHandler: { unzippedFile in
                     self.showAlertMessage(title: "복구가 완료되었습니다.")
+                    
                 })
                 
             } catch let error {

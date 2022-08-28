@@ -15,7 +15,7 @@ protocol SendDataDelegate {
 
 class ShoppingListViewController: BaseViewController {
     
-    let localRealm = try! Realm()
+    let repository = UserShoppingListRepository()
     
     let tableView: UITableView = {
         let view = UITableView()
@@ -54,22 +54,26 @@ class ShoppingListViewController: BaseViewController {
             make.topMargin.equalTo(mainView.textFieldBackgroundView.snp.bottom).offset(20) 
         }
         
-        print(localRealm.configuration.fileURL!)
+        print(repository.localRealm.configuration.fileURL!)
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
-        toDoList = self.localRealm.objects(UserShoppingList.self).sorted(byKeyPath: "favorite", ascending: false)
+        fetchRealm()
         tableView.reloadData()
     }
     
     override func configure() {
         
-        toDoList = localRealm.objects(UserShoppingList.self)
+        toDoList = repository.localRealm.objects(UserShoppingList.self)
         
         mainView.addButton.addTarget(self, action: #selector(addButtonClicked), for: .touchUpInside)
         mainView.backupButton.addTarget(self, action: #selector(backupButtonClicked), for: .touchUpInside)
     }
+    
+    func fetchRealm() {
+        toDoList = repository.fetch()
+    }
+    
     
     @objc func backupButtonClicked() {
         let vc = BackupViewController()
@@ -81,9 +85,7 @@ class ShoppingListViewController: BaseViewController {
     @objc func addButtonClicked() {
         let toDo = UserShoppingList(checkBox: false, toDo: mainView.shoppingTextField.text!, favorite: false)
         
-        try! localRealm.write {
-            localRealm.add(toDo)
-        }
+        repository.addNewShoppingList(item: self.toDoList, new: toDo)
         
         mainView.shoppingTextField.text = ""
         
@@ -139,18 +141,8 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let item = toDoList?[indexPath.row]
             
-            do {
-                try localRealm.write {
-                    removeImageToDocument(imageName: "\(item!.objectID).jpg")
-                    localRealm.delete(item!)
-                    
-                }
-            } catch {
-                print("Remove Image error")
-            }
-            
+            repository.delete(item: toDoList?[indexPath.row])
             
             tableView.reloadData()
         } 
@@ -161,18 +153,16 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
 extension ShoppingListViewController: ContentsButtonDelegate {
     
     func checkBoxButtonClickedP(_ sender: UIButton) {
-        try! self.localRealm.write {
-            toDoList[sender.tag].checkBox = !toDoList[sender.tag].checkBox
-        }
-        
+        self.repository.updateCheckBox(item: self.toDoList[sender.tag])
         tableView.reloadData()
     }
     
     func favoriteButtonClickedP(_ sender: UIButton) {
-        try! self.localRealm.write {
-            toDoList[sender.tag].favorite = !toDoList[sender.tag].favorite
-        }
-        toDoList = self.localRealm.objects(UserShoppingList.self).sorted(byKeyPath: "favorite", ascending: false)
+        
+        self.repository.updateFavorite(item: self.toDoList[sender.tag])
+        
+        // 즐겨찾기 버튼 클릭시 위로 이동
+        fetchRealm()
         
         tableView.reloadData()
     }
@@ -196,13 +186,15 @@ extension ShoppingListViewController: ContentsButtonDelegate {
 extension ShoppingListViewController: SendDataDelegate {
     func sendItemValue(item: String, index: Int) {
         
-        do {
-            try localRealm.write {
-                toDoList[index].toDo = item
-            }
-        } catch let error {
-            print("value send error", error)
-        }
+        repository.changeItemValue(currentItem: toDoList[index], newItem: item)
+        
+//        do {
+//            try repository.localRealm.write {
+//                toDoList[index].toDo = item
+//            }
+//        } catch let error {
+//            print("value send error", error)
+//        }
         
     }
 }
