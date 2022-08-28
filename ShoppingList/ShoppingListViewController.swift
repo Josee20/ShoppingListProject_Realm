@@ -9,6 +9,10 @@ import UIKit
 import RealmSwift
 import SnapKit
 
+protocol SendDataDelegate {
+    func sendItemValue(item: String, index: Int)
+}
+
 class ShoppingListViewController: BaseViewController {
     
     let localRealm = try! Realm()
@@ -23,6 +27,7 @@ class ShoppingListViewController: BaseViewController {
     let mainView = ShoppingListView()
     
     var toDoList: Results<UserShoppingList>! {
+        
         didSet {
             tableView.reloadData()
             print("tasks Changed")
@@ -52,6 +57,12 @@ class ShoppingListViewController: BaseViewController {
         print(localRealm.configuration.fileURL!)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        toDoList = self.localRealm.objects(UserShoppingList.self).sorted(byKeyPath: "favorite", ascending: false)
+        tableView.reloadData()
+    }
+    
     override func configure() {
         
         toDoList = localRealm.objects(UserShoppingList.self)
@@ -79,17 +90,6 @@ class ShoppingListViewController: BaseViewController {
         tableView.reloadData()
     }
     
-    func loadImageFromDocument(fileName: String) -> UIImage? {
-        guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil}
-        let fileURL = documentDirectory.appendingPathComponent(fileName)
-
-        if FileManager.default.fileExists(atPath: fileURL.path) {
-            return UIImage(contentsOfFile: fileURL.path)
-        } else {
-            return UIImage(systemName: "star.fill")
-        }
-    }
-    
 }
 
 extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource {
@@ -104,7 +104,7 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
 
         cell.backgroundColor = .systemGray6
         
-        cell.setData(data: toDoList[indexPath.row])
+        // 쇼핑리스트 이미지
         cell.shoppingListImage.image = loadImageFromDocument(fileName: "\(toDoList[indexPath.row].objectID).jpg")
         
         //레이블
@@ -126,7 +126,6 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
         let favoriteButtonImage = toDoList[indexPath.row].favorite ? "star.fill" : "star"
         cell.favoriteButton.setImage(UIImage(systemName: favoriteButtonImage), for: .normal)
         
-        
         return cell
     }
     
@@ -141,22 +140,31 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let item = toDoList?[indexPath.row]
-            try! localRealm.write {
-                localRealm.delete(item!)
+            
+            do {
+                try localRealm.write {
+                    removeImageToDocument(imageName: "\(item!.objectID).jpg")
+                    localRealm.delete(item!)
+                    
+                }
+            } catch {
+                print("Remove Image error")
             }
+            
+            
             tableView.reloadData()
-           
         } 
     }
 }
 
+// 체크박스 버튼, 즐겨찾기 버튼, info버튼 델리게이트
 extension ShoppingListViewController: ContentsButtonDelegate {
     
     func checkBoxButtonClickedP(_ sender: UIButton) {
         try! self.localRealm.write {
             toDoList[sender.tag].checkBox = !toDoList[sender.tag].checkBox
         }
-
+        
         tableView.reloadData()
     }
     
@@ -164,18 +172,38 @@ extension ShoppingListViewController: ContentsButtonDelegate {
         try! self.localRealm.write {
             toDoList[sender.tag].favorite = !toDoList[sender.tag].favorite
         }
+        toDoList = self.localRealm.objects(UserShoppingList.self).sorted(byKeyPath: "favorite", ascending: false)
         
         tableView.reloadData()
     }
     
     func moreInfoButtonClickedP(_ sender: UIButton) {
         let vc = MoreInfoViewController()
+        vc.tag = sender.tag
+        vc.objectID = toDoList[sender.tag].objectID
         vc.item = toDoList[sender.tag].toDo
-        let nav = UINavigationController(rootViewController: vc)
         
+        // SendDataDelegate(아이템 바꿀 때)
+        vc.delegate = self
+        let nav = UINavigationController(rootViewController: vc)
         
         nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true)
+    }
+}
+
+// 쇼핑리스트 아이템 수정 델리게이트
+extension ShoppingListViewController: SendDataDelegate {
+    func sendItemValue(item: String, index: Int) {
+        
+        do {
+            try localRealm.write {
+                toDoList[index].toDo = item
+            }
+        } catch let error {
+            print("value send error", error)
+        }
+        
     }
 }
 

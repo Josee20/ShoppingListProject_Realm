@@ -39,6 +39,7 @@ class MoreInfoView: BaseView {
     let shoppingItemTextField: UITextField = {
         let view = UITextField()
         view.backgroundColor = .systemGray6
+        view.textAlignment = .center
         return view
     }()
     

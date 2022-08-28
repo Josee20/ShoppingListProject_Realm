@@ -64,7 +64,7 @@ class ShoppingListTableViewCell: BaseTableViewCell {
     }
     
     func setData(data: UserShoppingList) {
-        shoppingListTextLabel.text = "굿굿"
+        
     }
     
     override func configure() {

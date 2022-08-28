@@ -20,6 +20,8 @@ class BackupViewController: BaseViewController {
         return view
     }()
     
+    var backupList = [String?]()
+    
     let mainView = BackupView()
     
     override func loadView() {
@@ -31,7 +33,11 @@ class BackupViewController: BaseViewController {
         
         mainView.addSubview(progressView)
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         
+        backupList += fetchDocumentZipFile()
     }
     
     override func configure() {
@@ -44,7 +50,6 @@ class BackupViewController: BaseViewController {
         
         let closeButton = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(closeButtonClicked))
         navigationItem.leftBarButtonItem = closeButton
-        
         
     }
     
@@ -109,18 +114,16 @@ class BackupViewController: BaseViewController {
 extension BackupViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        
-        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? BackupTableViewCell else { return UITableViewCell() }
         
         
+        cell.titleLabel.text = backupList[indexPath.row]
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return backupList.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

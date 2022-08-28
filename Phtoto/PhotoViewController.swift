@@ -16,6 +16,10 @@ class PhotoViewController: BaseViewController {
     
     var delegate: SelectImageDelegate?
     
+    var photoInfoList: [PhotoInfo] = []
+    var currentPage = 1
+    var totalPages = 1000
+    
     
     override func loadView() {
         self.view = mainView
@@ -24,11 +28,14 @@ class PhotoViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        showPhotos()
     }
     
     override func configure() {
         mainView.collectionView.delegate = self
         mainView.collectionView.dataSource = self
+        mainView.collectionView.prefetchDataSource = self
+        mainView.searchBar.delegate = self
         mainView.collectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         
         let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"), style: .plain, target: self, action: #selector(backButtonClicked))
@@ -52,25 +59,38 @@ class PhotoViewController: BaseViewController {
         dismiss(animated: true)
     }
     
+    func showPhotos() {
+        UnsplashAPIManager.shared.requestPhotoData(type: .photo, page: currentPage) { json in
+            
+            for urls in json.arrayValue {
+
+                let photo = urls["urls"]["regular"].stringValue
+                let title = urls["user"]["name"].stringValue
+
+                let photoInfo = PhotoInfo(title: title, link: photo)
+                self.photoInfoList.append(photoInfo)
+
+            }
+            
+            self.mainView.collectionView.reloadData()
+        }
+    }
 }
 
 extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        ImageDummy.data.count
+        photoInfoList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
         
-        
-        
         cell.layer.borderWidth = selectIndexPath == indexPath ? 2 : 0
         cell.layer.borderColor = selectIndexPath == indexPath ? UIColor.blue.cgColor : nil
         
-        
-        cell.setImage(data: ImageDummy.data[indexPath.item].url)
+        cell.setImage(data: photoInfoList[indexPath.item].link)
         
         return cell
     }
@@ -92,4 +112,21 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
         collectionView.reloadData()
     }
     
+}
+
+extension PhotoViewController: UICollectionViewDataSourcePrefetching {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            if photoInfoList.count - 1 == indexPath.item && currentPage < totalPages {
+                currentPage += 1
+                showPhotos()
+            }
+        }
+    }
+}
+
+extension PhotoViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+    }
 }

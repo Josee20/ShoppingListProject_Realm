@@ -14,10 +14,14 @@ protocol SelectImageDelegate {
 
 class MoreInfoViewController: BaseViewController {
     
+    var delegate: SendDataDelegate?
+    
+    var tag = 0
     let localRealm = try! Realm()
     let mainView = MoreInfoView()
     
     var item: String = ""
+    var objectID: ObjectId?
     
     override func loadView() {
         self.view = mainView
@@ -35,6 +39,8 @@ class MoreInfoViewController: BaseViewController {
     }
     
     override func configure() {
+        
+        mainView.changeShoppingItemButton.addTarget(self, action: #selector(changeShoppingItemButtonClicked), for: .touchUpInside)
         mainView.searchImageButton.addTarget(self, action: #selector(searchImageButtonClicked), for: .touchUpInside)
         
         let closeButton = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(closeButtonClicked))
@@ -42,12 +48,19 @@ class MoreInfoViewController: BaseViewController {
         
         navigationItem.leftBarButtonItem = closeButton
         navigationItem.rightBarButtonItem = selectButton
+        
+    }
+    
+    @objc func changeShoppingItemButtonClicked() {
+        
+        delegate?.sendItemValue(item: mainView.shoppingItemTextField.text!, index: tag)
+        showAlertMessage(title: "쇼핑리스트가 변경되었습니다")
+        self.navigationItem.title = mainView.shoppingItemTextField.text!
+        
     }
     
     @objc func searchImageButtonClicked() {
         let vc = PhotoViewController()
-        
-        // 왜들어가는거지?...
         vc.delegate = self
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
@@ -60,40 +73,17 @@ class MoreInfoViewController: BaseViewController {
     
     @objc func selectButtonClicked() {
         
-        let toDoList = UserShoppingList(checkBox: false, toDo: "굿샷", favorite: false)
-        
-        do {
-            try localRealm.write {
-                localRealm.add(toDoList)
-            }
-        } catch let error {
-            print(error)
-        }
-        
         // 이미지 이름 objectID(PK)활용해 만들고 이미지 저장
         if let image = mainView.shoppingItemImage.image {
-            saveImageToDocument(fileName: "\(toDoList.objectID).jpg", image: image)
+            saveImageToDocument(fileName: "\(objectID!).jpg", image: image)
         }
         
         dismiss(animated: true)
-    }
-    
-    func saveImageToDocument(fileName: String, image: UIImage) {
-        guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-
-        let fileURL = documentDirectory.appendingPathComponent(fileName)
-        guard let data = image.jpegData(compressionQuality: 0.5) else { return }
-
-        do {
-            try data.write(to: fileURL)
-        } catch let error {
-            print("file save error", error)
-        }
-    }
+    }  
 }
 
 extension MoreInfoViewController: SelectImageDelegate {
-    
+
     func sendImageData(image: UIImage) {
         mainView.shoppingItemImage.image = image
         print(#function)

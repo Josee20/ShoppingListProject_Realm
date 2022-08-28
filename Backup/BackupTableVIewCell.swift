@@ -9,11 +9,7 @@ import UIKit
 
 class BackupTableViewCell: BaseTableViewCell {
     
-    let zipImageView: UIImageView = {
-        let view = UIImageView()
-        view.backgroundColor = .green
-        return view
-    }()
+    
     
     let titleLabel: UILabel = {
        let view = UILabel()
@@ -24,13 +20,7 @@ class BackupTableViewCell: BaseTableViewCell {
         return view
     }()
     
-    let dateLabel: UILabel = {
-       let view = UILabel()
-        view.textColor = .white
-        view.backgroundColor = .systemGray6
-        view.font = .boldSystemFont(ofSize: 13)
-        return view
-    }()
+    
     
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -42,32 +32,16 @@ class BackupTableViewCell: BaseTableViewCell {
     }
     
     override func configure() {
+        self.addSubview(titleLabel)
         
-        [zipImageView, titleLabel, dateLabel].forEach {
-            self.addSubview($0)
-        }
     }
     
     override func setConstraints() {
         
-        zipImageView.snp.makeConstraints { make in
-            make.topMargin.leadingMargin.equalTo(20)
-            make.bottomMargin.equalTo(-20)
-            make.width.equalTo(40)
-        }
-        
         titleLabel.snp.makeConstraints { make in
-            make.leadingMargin.topMargin.equalTo(20)
-            make.trailingMargin.equalTo(-20)
-            make.bottomMargin.equalTo(dateLabel.snp.top).offset(10)
-        }
-        
-        dateLabel.snp.makeConstraints { make in
-            make.leadingMargin.equalTo(20)
-            make.topMargin.equalTo(10)
-            make.trailingMargin.equalTo(-20)
+            make.leadingMargin.topMargin.equalTo(10)
+            make.trailingMargin.equalTo(-10)
             make.bottomMargin.equalTo(-10)
         }
     }
-    
 }

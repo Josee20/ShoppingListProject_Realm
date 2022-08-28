@@ -41,7 +41,7 @@ class PhotoView: BaseView {
     static func imageCollectionViewLayout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
         let deviceWidth: CGFloat = UIScreen.main.bounds.width
-        let itemWidth: CGFloat = deviceWidth / 3
+        let itemWidth: CGFloat = deviceWidth / 2
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
